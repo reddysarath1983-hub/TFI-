@@ -1,5 +1,24 @@
 import React, { useState } from 'react';
-import { X, PlusCircle, Sparkles, Send } from 'lucide-react';
+import { X, PlusCircle, Sparkles, Send, Upload, Image as ImageIcon, Check } from 'lucide-react';
+
+const COVER_PRESETS = [
+  {
+    name: 'Mythological Fire',
+    url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop'
+  },
+  {
+    name: 'Desert Falcon',
+    url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop'
+  },
+  {
+    name: 'Temple Ruins',
+    url: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1000&auto=format&fit=crop'
+  },
+  {
+    name: 'Forest Neo-Noir',
+    url: 'https://images.unsplash.com/photo-1511497584788-8767611136f6?q=80&w=1000&auto=format&fit=crop'
+  }
+];
 
 export default function SubmitStoryModal({ onClose, onSubmitStory }) {
   const [formData, setFormData] = useState({
@@ -12,13 +31,28 @@ export default function SubmitStoryModal({ onClose, onSubmitStory }) {
     director: '',
     music: '',
     author_name: '',
+    poster_url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop',
     full_script: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadFileName, setUploadFileName] = useState('');
 
   const handleChange = (field, val) => {
     setFormData(prev => ({ ...prev, [field]: val }));
+  };
+
+  // Convert uploaded image file to Base64 data URL
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploadFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleChange('poster_url', reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -61,7 +95,7 @@ export default function SubmitStoryModal({ onClose, onSubmitStory }) {
             Submit Your Cinema Treatment
           </h2>
           <p className="text-[11px] sm:text-xs text-slate-400">
-            Share your story concept with the TFI WritersClub community and get real fan ratings.
+            Share your story concept with the TFI WritersClub community with cover poster art & dream casting.
           </p>
         </div>
 
@@ -120,6 +154,101 @@ export default function SubmitStoryModal({ onClose, onSubmitStory }) {
                 <option value="Sci-Fi Fantasy">Sci-Fi Fantasy</option>
               </select>
             </div>
+          </div>
+
+          {/* Story Cover Image Upload / Selection */}
+          <div className="bg-[#070709] p-3.5 sm:p-4 rounded-lg border border-[#22222E] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase font-bold text-[#E5A93C] tracking-widest flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5" />
+                Story Cover Poster Art:
+              </span>
+              {uploadFileName && (
+                <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                  <Check className="w-3 h-3" />
+                  {uploadFileName}
+                </span>
+              )}
+            </div>
+
+            {/* Upload File or Image URL */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+              {/* File Upload Button */}
+              <label className="flex items-center justify-center gap-2 p-3 bg-[#121218] hover:bg-[#1A1A24] border border-[#22222E] hover:border-[#E5A93C] rounded-lg text-xs font-bold text-slate-200 cursor-pointer transition-colors">
+                <Upload className="w-4 h-4 text-[#E5A93C]" />
+                <span>Upload Cover Image File</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+
+              {/* Paste Image URL */}
+              <input
+                type="url"
+                placeholder="Or paste cover image URL..."
+                value={formData.poster_url}
+                onChange={(e) => {
+                  setUploadFileName('');
+                  handleChange('poster_url', e.target.value);
+                }}
+                className="w-full bg-[#121218] border border-[#22222E] rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-[#E5A93C]"
+              />
+            </div>
+
+            {/* Quick Cinema Presets */}
+            <div className="space-y-1">
+              <span className="text-[9px] uppercase font-bold text-slate-500 tracking-widest block">
+                Or select cinematic cover preset:
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {COVER_PRESETS.map((preset, idx) => (
+                  <button
+                    type="button"
+                    key={idx}
+                    onClick={() => {
+                      setUploadFileName('');
+                      handleChange('poster_url', preset.url);
+                    }}
+                    className={`relative rounded-md overflow-hidden h-14 border transition-all cursor-pointer ${
+                      formData.poster_url === preset.url
+                        ? 'border-[#E5A93C] ring-1 ring-[#E5A93C]'
+                        : 'border-[#22222E] opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img
+                      src={preset.url}
+                      alt={preset.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-1">
+                      <span className="text-[9px] font-bold text-white text-center leading-tight">
+                        {preset.name}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Cover Preview */}
+            {formData.poster_url && (
+              <div className="pt-1 flex items-center gap-3 bg-[#121218] p-2 rounded-lg border border-[#22222E]">
+                <div className="w-12 h-12 rounded overflow-hidden flex-shrink-0 bg-slate-900">
+                  <img
+                    src={formData.poster_url}
+                    alt="Cover preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-xs">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold block">Live Cover Preview</span>
+                  <span className="text-slate-300 font-semibold truncate block max-w-xs">{formData.title || 'Story Title'}</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Logline */}

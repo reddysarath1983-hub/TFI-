@@ -133,7 +133,7 @@ export async function createStory(newStoryData) {
     author_name: newStoryData.author_name || 'Community Writer',
     created_at: new Date().toISOString(),
     poster_url: newStoryData.poster_url || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1000&auto=format&fit=crop",
-    hero_image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop",
+    hero_image: newStoryData.hero_image || newStoryData.poster_url || "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop",
     dream_cast: {
       hero: newStoryData.hero || 'Dream Hero',
       hero_role: newStoryData.hero_role || 'Lead Protagonist',
