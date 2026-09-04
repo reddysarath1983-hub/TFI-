@@ -1,5 +1,5 @@
 import React from 'react';
-import { Film, Sparkles, PlusCircle, Search, Bookmark, Database, ShieldCheck, Flame } from 'lucide-react';
+import { Film, Sparkles, PlusCircle, Search, Bookmark, Database, ShieldCheck, Flame, Command } from 'lucide-react';
 
 export default function Navbar({ 
   searchQuery, 
@@ -12,113 +12,113 @@ export default function Navbar({
 }) {
   return (
     <>
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 w-full glass-nav">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+      {/* Top Navigation Bar */}
+      <header className="sticky top-0 z-40 w-full cinema-nav">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
           
-          {/* Brand Logo */}
+          {/* Brand Logo & Editorial Title */}
           <div 
             onClick={() => setActiveTab('feed')}
-            className="flex items-center gap-2.5 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#E5A93C] to-[#996D17] p-[1px] shadow-lg shadow-[#E5A93C]/20 group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
-              <div className="w-full h-full bg-[#09090B] rounded-[11px] flex items-center justify-center">
-                <Film className="w-4 h-4 sm:w-5 sm:h-5 text-[#E5A93C] group-hover:rotate-12 transition-transform duration-300" />
-              </div>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#E5A93C] flex items-center justify-center shadow-lg shadow-[#E5A93C]/15 group-hover:bg-[#F7D692] transition-colors duration-200 flex-shrink-0">
+              <Film className="w-5 h-5 text-[#070709] font-bold group-hover:scale-110 transition-transform duration-200" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-cinzel text-base sm:text-xl font-black tracking-wider text-white group-hover:text-[#E5A93C] transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="font-cinzel text-base sm:text-xl font-black tracking-widest text-white group-hover:text-[#E5A93C] transition-colors">
                   TFI WRITERSCLUB
                 </span>
-                {/* Supabase Status Badge */}
-                <span className={`inline-flex items-center gap-1 text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full border ${
+                {/* Database Connection Badge */}
+                <span className={`inline-flex items-center gap-1 text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded border ${
                   isLiveSupabase 
-                    ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800' 
-                    : 'bg-amber-950/60 text-amber-400 border-amber-800/80'
+                    ? 'bg-emerald-950/70 text-emerald-400 border-emerald-800/80' 
+                    : 'bg-amber-950/50 text-amber-400 border-amber-800/60'
                 }`}>
                   {isLiveSupabase ? (
                     <>
-                      <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                      <span className="hidden xs:inline">Supabase Live</span>
-                      <span className="xs:hidden">Live</span>
+                      <ShieldCheck className="w-2.5 h-2.5 text-emerald-400" />
+                      <span>LIVE DB</span>
                     </>
                   ) : (
                     <>
-                      <Database className="w-3 h-3 text-amber-400" />
-                      <span className="hidden xs:inline">Demo Mode</span>
-                      <span className="xs:hidden">Demo</span>
+                      <Database className="w-2.5 h-2.5 text-amber-400" />
+                      <span>DEMO</span>
                     </>
                   )}
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] tracking-widest uppercase font-medium text-slate-400 leading-tight">
-                Your Story. <span className="text-[#E5A93C]">Our Ratings.</span>
+              <p className="text-[10px] tracking-widest uppercase font-semibold text-slate-400">
+                MOVIES • STORIES • <span className="text-[#E5A93C]">RATINGS</span>
               </p>
             </div>
           </div>
 
-          {/* Desktop Search Bar */}
+          {/* Desktop Search Input */}
           <div className="hidden md:flex flex-1 max-w-md relative">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
-              placeholder="Search titles, heroes (e.g. Prabhas), directors..."
+              placeholder="Search treatments, heroes (e.g. Prabhas), directors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#121218] border border-[#27272A] rounded-full pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-[#E5A93C] transition-all"
+              className="w-full bg-[#121218] border border-[#22222E] rounded-lg pl-10 pr-9 py-2 text-xs sm:text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-[#E5A93C] focus:bg-[#161620] transition-all"
             />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500 border border-[#272736] px-1.5 py-0.5 rounded">
+              /
+            </div>
           </div>
 
-          {/* Desktop Nav Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setActiveTab('feed')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'feed'
                   ? 'bg-[#E5A93C]/10 text-[#E5A93C] border border-[#E5A93C]/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
               }`}
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
               <span>Explore</span>
             </button>
 
             <button
               onClick={() => setActiveTab('weekly')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'weekly'
                   ? 'bg-[#DC2626]/10 text-[#EF4444] border border-[#DC2626]/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
               }`}
             >
-              <Flame className="w-4 h-4 text-amber-500" />
+              <Flame className="w-3.5 h-3.5 text-amber-500" />
               <span>Top Story</span>
             </button>
 
             <button
               onClick={() => setActiveTab('bookmarks')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all relative flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all relative flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'bookmarks'
                   ? 'bg-[#E5A93C]/10 text-[#E5A93C] border border-[#E5A93C]/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 border border-transparent'
               }`}
             >
-              <Bookmark className="w-4 h-4" />
+              <Bookmark className="w-3.5 h-3.5" />
               <span>Saved</span>
               {savedCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-[#E5A93C] text-slate-950 font-black text-[9px] flex items-center justify-center">
+                <span className="w-4 h-4 rounded bg-[#E5A93C] text-[#070709] font-black text-[9px] flex items-center justify-center">
                   {savedCount}
                 </span>
               )}
             </button>
 
+            {/* Primary Action CTA */}
             <button
               onClick={onOpenSubmit}
-              className="px-4 py-2 rounded-lg text-xs font-extrabold text-slate-950 bg-gradient-to-r from-[#F3C775] via-[#E5A93C] to-[#B87E1B] hover:opacity-95 transition-all flex items-center gap-1.5 shadow-lg shadow-[#E5A93C]/20 active:scale-95 cursor-pointer"
+              className="px-4 py-2 rounded-lg text-xs font-extrabold tracking-wider uppercase text-[#070709] bg-[#E5A93C] hover:bg-[#F7D692] transition-all duration-200 flex items-center gap-1.5 shadow-md shadow-[#E5A93C]/15 active:scale-95 cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Submit Treatment</span>
+              <span>Submit Story</span>
             </button>
           </div>
 
@@ -130,47 +130,47 @@ export default function Navbar({
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
-              placeholder="Search titles, heroes, directors..."
+              placeholder="Search treatments, heroes, directors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#121218] border border-[#27272A] rounded-full pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-[#E5A93C]"
+              className="w-full bg-[#121218] border border-[#22222E] rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-[#E5A93C]"
             />
           </div>
         </div>
       </header>
 
-      {/* Mobile Fixed Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#09090B]/95 backdrop-blur-xl border-t border-[#27272A] px-2 py-2 flex items-center justify-around shadow-2xl">
+      {/* Mobile Fixed Bottom App Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070709]/95 backdrop-blur-xl border-t border-[#1C1C26] px-2 py-2 flex items-center justify-around">
         <button
           onClick={() => setActiveTab('feed')}
-          className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all ${
-            activeTab === 'feed' ? 'text-[#E5A93C] font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-colors ${
+            activeTab === 'feed' ? 'text-[#E5A93C] font-bold' : 'text-slate-500'
           }`}
         >
-          <Sparkles className="w-5 h-5" />
-          <span className="text-[10px]">Explore</span>
+          <Sparkles className="w-4 h-4" />
+          <span className="text-[10px] uppercase tracking-wider font-semibold">Explore</span>
         </button>
 
         <button
           onClick={() => setActiveTab('weekly')}
-          className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all ${
-            activeTab === 'weekly' ? 'text-[#EF4444] font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-colors ${
+            activeTab === 'weekly' ? 'text-[#EF4444] font-bold' : 'text-slate-500'
           }`}
         >
-          <Flame className="w-5 h-5 text-amber-500" />
-          <span className="text-[10px]">Top Story</span>
+          <Flame className="w-4 h-4 text-amber-500" />
+          <span className="text-[10px] uppercase tracking-wider font-semibold">Top Story</span>
         </button>
 
         <button
           onClick={() => setActiveTab('bookmarks')}
-          className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl relative transition-all ${
-            activeTab === 'bookmarks' ? 'text-[#E5A93C] font-bold' : 'text-slate-400'
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-lg relative transition-colors ${
+            activeTab === 'bookmarks' ? 'text-[#E5A93C] font-bold' : 'text-slate-500'
           }`}
         >
-          <Bookmark className="w-5 h-5" />
-          <span className="text-[10px]">Saved</span>
+          <Bookmark className="w-4 h-4" />
+          <span className="text-[10px] uppercase tracking-wider font-semibold">Saved</span>
           {savedCount > 0 && (
-            <span className="absolute top-1 right-2 w-4 h-4 rounded-full bg-[#E5A93C] text-slate-950 font-bold text-[9px] flex items-center justify-center">
+            <span className="absolute top-0 right-2 w-3.5 h-3.5 rounded bg-[#E5A93C] text-[#070709] font-bold text-[9px] flex items-center justify-center">
               {savedCount}
             </span>
           )}
@@ -178,10 +178,10 @@ export default function Navbar({
 
         <button
           onClick={onOpenSubmit}
-          className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-[#F3C775] font-bold"
+          className="flex flex-col items-center gap-1 px-3 py-1 rounded-lg text-[#F7D692] font-bold"
         >
-          <PlusCircle className="w-5 h-5" />
-          <span className="text-[10px]">Submit</span>
+          <PlusCircle className="w-4 h-4" />
+          <span className="text-[10px] uppercase tracking-wider font-semibold">Submit</span>
         </button>
       </nav>
     </>
