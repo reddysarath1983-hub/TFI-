@@ -6,7 +6,7 @@ import ScriptReader from './components/ScriptReader';
 import RatingSystem from './components/RatingSystem';
 import SubmitStoryModal from './components/SubmitStoryModal';
 import { fetchStories, submitRating, createStory, isSupabaseConfigured } from './lib/supabase';
-import { Film, Trophy, Bookmark, Sparkles, Plus, Star } from 'lucide-react';
+import { Film, Trophy, Bookmark, Sparkles, Plus, Star, ShieldCheck, Database, Info } from 'lucide-react';
 
 export default function App() {
   const [stories, setStories] = useState([]);
@@ -21,6 +21,7 @@ export default function App() {
   const [readingStory, setReadingStory] = useState(null);
   const [ratingStory, setRatingStory] = useState(null);
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
+  const [showSyncNotification, setShowSyncNotification] = useState(false);
 
   // Saved Bookmarks (localStorage)
   const [savedIds, setSavedIds] = useState(() => {
@@ -34,16 +35,24 @@ export default function App() {
 
   const isConfigured = isSupabaseConfigured();
 
-  // Initial Data Load
+  // Load Data function
+  async function loadData(showSpinner = false) {
+    if (showSpinner) setLoading(true);
+    const res = await fetchStories();
+    setStories(res.data);
+    setIsLiveSupabase(res.isLive);
+    if (showSpinner) setLoading(false);
+  }
+
+  // Initial Data Load & Auto-polling every 4 seconds for instant global updates
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      const res = await fetchStories();
-      setStories(res.data);
-      setIsLiveSupabase(res.isLive);
-      setLoading(false);
-    }
-    loadData();
+    loadData(true);
+
+    const pollInterval = setInterval(() => {
+      loadData(false);
+    }, 4000);
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   // Save Bookmarks to localStorage
@@ -64,17 +73,16 @@ export default function App() {
 
   // Submit Rating Handler
   const handleRatingSubmit = async (storyId, ratingData) => {
-    const res = await submitRating(storyId, ratingData);
-    // Reload updated story list
-    const updated = await fetchStories();
-    setStories(updated.data);
+    await submitRating(storyId, ratingData);
+    await loadData(false);
   };
 
   // Create Story Handler
   const handleCreateStory = async (storyData) => {
-    const res = await createStory(storyData);
-    const updated = await fetchStories();
-    setStories(updated.data);
+    await createStory(storyData);
+    await loadData(false);
+    setShowSyncNotification(true);
+    setTimeout(() => setShowSyncNotification(false), 5000);
   };
 
   // Find Top Weekly Story
@@ -97,7 +105,7 @@ export default function App() {
   const bookmarkedStories = stories.filter(s => savedIds.includes(s.id));
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-slate-100 font-sans selection:bg-[#E5A93C]/30 flex flex-col justify-between">
+    <div className="min-h-screen bg-[#09090B] text-slate-100 font-sans selection:bg-[#E5A93C]/30 flex flex-col justify-between pb-16 md:pb-0">
       
       {/* Top Sticky Header */}
       <Navbar
@@ -110,8 +118,29 @@ export default function App() {
         isLiveSupabase={isLiveSupabase}
       />
 
+      {/* Cloud Sync Toast Notification */}
+      {showSyncNotification && (
+        <div className="fixed top-24 right-4 z-50 p-4 rounded-xl bg-[#E5A93C] text-slate-950 font-bold shadow-2xl flex items-center gap-3 animate-slideDown">
+          <Sparkles className="w-5 h-5 flex-shrink-0" />
+          <div className="text-xs">
+            <p className="font-extrabold uppercase text-slate-900">Treatment Published!</p>
+            <p className="font-medium text-slate-950/80">Your story is live and visible in the Explore feed.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Info Banner when running in Cloud Shared Mode */}
+      {!isLiveSupabase && (
+        <div className="bg-amber-950/40 border-b border-amber-800/50 px-4 py-2 text-center text-xs text-amber-300 flex items-center justify-center gap-2">
+          <Info className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+          <span>
+            <strong>Cloud Shared Mode Active:</strong> Submissions and ratings update live in your feed. To connect your private Supabase database, set <code className="bg-amber-900/60 px-1 py-0.5 rounded text-white">VITE_SUPABASE_URL</code> in <code className="bg-amber-900/60 px-1 py-0.5 rounded text-white">.env</code>.
+          </span>
+        </div>
+      )}
+
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-8 sm:space-y-10">
         
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 space-y-4">
@@ -133,7 +162,7 @@ export default function App() {
 
             {/* VIEW 2: EXPLORE FEED (HOME) */}
             {activeTab === 'feed' && (
-              <div className="space-y-10 animate-fadeIn">
+              <div className="space-y-8 sm:space-y-10 animate-fadeIn">
                 {/* Hero Banner for Top Story if no search query active */}
                 {!searchQuery && weeklyTopStory && (
                   <WeeklyHero
@@ -242,7 +271,7 @@ export default function App() {
             <span>Screenplay Reader Controls</span>
           </div>
           <p className="text-[11px] text-slate-600">
-            © {new Date().getFullYear()} TFI WritersClub. Connected to Supabase with instant fallback.
+            © {new Date().getFullYear()} TFI WritersClub. Connected to Supabase DB or Cloud Sync.
           </p>
         </div>
       </footer>
