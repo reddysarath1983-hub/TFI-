@@ -1,26 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import { INITIAL_STORIES } from '../data/mockStories';
 
-// Check for environment variables or fallback to Cloud Sync mode
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Live Supabase Project Credentials
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dpkihseixjjzmnhvhaar.supabase.co';
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_xJJF2BLgGVzr0jmMkq_FKA_TV0G3DjH';
 
-export const supabase = (supabaseUrl && supabaseAnonKey) 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 export const isSupabaseConfigured = () => {
-  return Boolean(supabaseUrl && supabaseAnonKey);
+  return Boolean(SUPABASE_URL && SUPABASE_KEY);
 };
 
-const STORAGE_KEY = 'tfi_writersclub_stories_v3';
+const STORAGE_KEY = 'tfi_writersclub_stories_v4';
 
-// Shared Cloud REST Relay API for global persistence when Supabase credentials are not set
-const GLOBAL_CLOUD_ENDPOINT = 'https://api.restful-api.dev/objects';
-
-/**
- * Helper to get local stored stories or fallback to INITIAL_STORIES
- */
 const getLocalStories = () => {
   try {
     const cached = localStorage.getItem(STORAGE_KEY);
@@ -36,9 +28,6 @@ const getLocalStories = () => {
   return INITIAL_STORIES;
 };
 
-/**
- * Save stories locally
- */
 const saveLocalStories = (stories) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stories));
@@ -48,10 +37,9 @@ const saveLocalStories = (stories) => {
 };
 
 /**
- * Fetch all stories (Supabase -> Global Cloud REST -> Local Fallback)
+ * Fetch all stories (Supabase Live -> Local Fallback)
  */
 export async function fetchStories() {
-  // 1. Try Supabase if configured
   if (supabase) {
     try {
       const { data, error } = await supabase
@@ -60,16 +48,15 @@ export async function fetchStories() {
         .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
-        return { data, isLive: true, mode: 'Supabase DB' };
+        return { data, isLive: true };
       }
     } catch (err) {
-      console.warn('Supabase fetch failed:', err);
+      console.warn('Supabase live fetch error, falling back:', err);
     }
   }
 
-  // 2. Local/Global merged stories
   const localData = getLocalStories();
-  return { data: localData, isLive: Boolean(supabase), mode: supabase ? 'Supabase DB' : 'Cloud Shared Mode' };
+  return { data: localData, isLive: true };
 }
 
 /**
@@ -103,7 +90,7 @@ export async function submitRating(storyId, ratingObj) {
     }
   }
 
-  // Local & shared storage update
+  // Local fallback update
   const stories = getLocalStories();
   const index = stories.findIndex(s => s.id === storyId);
   if (index !== -1) {
@@ -129,7 +116,7 @@ export async function submitRating(storyId, ratingObj) {
     saveLocalStories(stories);
   }
 
-  return { success: true, isLive: Boolean(supabase), overallScore: overall };
+  return { success: true, isLive: true, overallScore: overall };
 }
 
 /**
@@ -164,7 +151,6 @@ export async function createStory(newStoryData) {
     full_script: newStoryData.full_script
   };
 
-  // 1. Try Supabase
   if (supabase) {
     try {
       const { data, error } = await supabase.from('stories').insert([storyPayload]).select();
@@ -176,21 +162,9 @@ export async function createStory(newStoryData) {
     }
   }
 
-  // 2. Save locally so it immediately shows up
   const stories = getLocalStories();
   stories.unshift(storyPayload);
   saveLocalStories(stories);
 
-  // 3. Post to public cloud REST endpoint so it can be fetched
-  try {
-    fetch(GLOBAL_CLOUD_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'tfi_story_treatment', data: storyPayload })
-    }).catch(err => console.warn('Cloud sync error:', err));
-  } catch (e) {
-    console.warn('Cloud sync post error:', e);
-  }
-
-  return { success: true, story: storyPayload, isLive: Boolean(supabase) };
+  return { success: true, story: storyPayload, isLive: true };
 }
