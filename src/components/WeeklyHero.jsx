@@ -1,164 +1,132 @@
 import React from 'react';
-import { Trophy, Star, BookOpen, User, Clapperboard, Music, Flame, Zap, Award } from 'lucide-react';
+import { Trophy, Star, BookOpen, User, Clapperboard, Music, Flame, Zap, PenTool, ArrowRight } from 'lucide-react';
 
 export default function WeeklyHero({ story, onReadScript, onOpenRate }) {
   if (!story) return null;
 
   return (
-    <section className="relative w-full rounded-2xl overflow-hidden cinema-panel border border-[#22222E] mb-10 sm:mb-14">
-      
-      {/* Background Cinematic Artwork with Spotlight & Vignette */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={story.hero_image || story.poster_url}
-          alt={story.title}
-          className="w-full h-full object-cover object-center opacity-25 filter brightness-90 saturate-110 transform scale-105"
-        />
-        {/* Layered Vignette Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/85 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#070709] via-[#070709]/90 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(229,169,60,0.12),transparent_60%)]" />
-      </div>
-
-      <div className="relative z-10 p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row gap-8 lg:items-center justify-between">
+    <section className="relative min-h-[85vh] flex items-center pt-32 pb-16 overflow-hidden bg-[radial-gradient(ellipse_60%_50%_at_82%_20%,rgba(225,68,24,0.16),transparent_60%),radial-gradient(ellipse_50%_60%_at_100%_100%,rgba(215,165,82,0.08),transparent_60%),linear-gradient(180deg,#0d0b09_0%,#0a0908_55%,#0d0a08_100%)] rounded-3xl border border-[rgba(244,238,227,0.08)] mb-12 sm:mb-16">
+      <div className="w-full max-w-[1240px] mx-auto px-6 sm:px-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
         
-        {/* Left Editorial Section */}
-        <div className="max-w-2xl space-y-5">
+        {/* Left Column: Headline, Telugu Tag, Pitch & CTAs */}
+        <div className="lg:col-span-7 space-y-6">
           
-          {/* Magazine Cover Tag */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#E5A93C]/10 border border-[#E5A93C]/30 text-[#E5A93C] text-[11px] font-bold uppercase tracking-widest">
-            <Trophy className="w-3.5 h-3.5 text-[#E5A93C]" />
-            <span>Weekly Top Story Treatment</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E5A93C] animate-pulse" />
+          {/* Eyebrow Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(244,238,227,0.14)] text-xs font-semibold text-[#b8ac9a]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#e14418] shadow-[0_0_8px_#e14418]" />
+            <span>2,140 stories and counting</span>
           </div>
 
-          {/* Title & Tagline */}
+          {/* Main Title & Telugu Tag */}
           <div>
-            <h1 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-wide leading-tight">
-              {story.title}
+            <h1 className="font-display font-extrabold text-5xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.92] bg-gradient-to-b from-[#fff8f0] to-[#d8cabb] bg-clip-text text-transparent">
+              KATHA
             </h1>
-            {story.tagline && (
-              <p className="font-serif-title italic text-slate-300 text-base sm:text-xl mt-1.5">
-                "{story.tagline}"
-              </p>
-            )}
+            <span className="font-telugu font-semibold text-2xl sm:text-4xl text-[#f4efe4] block mt-3">
+              నీ కథ. మన తీర్పు.
+            </span>
           </div>
 
-          {/* Logline */}
-          <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-normal">
-            {story.logline}
-          </p>
+          {/* Featured Story Focus Box */}
+          <div className="bg-[#161310] border border-[rgba(244,238,227,0.1)] rounded-2xl p-5 space-y-3 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-[#ff6a35] flex items-center gap-1.5">
+                <Trophy className="w-3.5 h-3.5 text-[#d7a552]" />
+                Top Weekly Featured Story
+              </span>
+              <div className="flex items-center gap-1 text-xs font-bold text-[#d7a552]">
+                <Star className="w-3.5 h-3.5 fill-[#d7a552]" />
+                <span>{story.scores?.overall || 9.5} / 10</span>
+              </div>
+            </div>
 
-          {/* Dream Cast Badges */}
-          <div className="pt-2">
-            <p className="text-[10px] sm:text-xs uppercase font-bold tracking-widest text-slate-400 mb-2.5 flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-[#E5A93C]" />
-              Fan Dream Cast:
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#f4efe4]">
+              {story.title}
+            </h2>
+
+            <p className="text-xs sm:text-sm text-[#b8ac9a] line-clamp-2 italic">
+              "{story.logline}"
             </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#121218] border border-[#22222E] text-xs font-medium text-slate-200">
-                <User className="w-3.5 h-3.5 text-[#E5A93C]" />
-                <span className="text-slate-500">Hero:</span>
-                <strong className="text-white">{story.dream_cast?.hero}</strong>
-              </span>
 
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#121218] border border-[#22222E] text-xs font-medium text-slate-200">
-                <Clapperboard className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-slate-500">Director:</span>
-                <strong className="text-white">{story.dream_cast?.director}</strong>
+            {/* Dream Cast Pills */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+              <span className="px-2.5 py-1 rounded-md bg-[#1e1a15] border border-[rgba(244,238,227,0.08)] text-[#f4efe4]">
+                Hero: <strong className="text-white">{story.dream_cast?.hero}</strong>
               </span>
-
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#121218] border border-[#22222E] text-xs font-medium text-slate-200">
-                <Music className="w-3.5 h-3.5 text-red-400" />
-                <span className="text-slate-500">Music:</span>
-                <strong className="text-white">{story.dream_cast?.music}</strong>
+              <span className="px-2.5 py-1 rounded-md bg-[#1e1a15] border border-[rgba(244,238,227,0.08)] text-[#f4efe4]">
+                Director: <strong className="text-white">{story.dream_cast?.director}</strong>
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-[#1e1a15] border border-[rgba(244,238,227,0.08)] text-[#f4efe4]">
+                Music: <strong className="text-white">{story.dream_cast?.music}</strong>
               </span>
             </div>
           </div>
 
-          {/* Primary & Secondary Actions */}
-          <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center gap-4 pt-2">
             <button
               onClick={() => onReadScript(story)}
-              className="px-6 py-3.5 rounded-lg font-extrabold tracking-wider uppercase text-[#070709] bg-[#E5A93C] hover:bg-[#F7D692] transition-all duration-200 shadow-lg shadow-[#E5A93C]/15 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
+              className="bg-gradient-to-r from-[#ff6a35] to-[#e14418] text-[#fff6ee] font-bold text-sm sm:text-base px-7 py-4 rounded-full shadow-xl shadow-[#e14418]/50 hover:-translate-y-1 transition-all duration-200 flex items-center gap-2 cursor-pointer"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Read Treatment</span>
+              <BookOpen className="w-5 h-5" />
+              <span>Read Full Script Treatment</span>
             </button>
 
             <button
               onClick={() => onOpenRate(story)}
-              className="px-6 py-3.5 rounded-lg font-bold tracking-wider uppercase text-white bg-[#121218] hover:bg-[#1A1A22] border border-[#22222E] hover:border-[#E5A93C]/50 transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
+              className="font-bold text-sm sm:text-base text-[#f4efe4] hover:text-[#ff6a35] flex items-center gap-2 border-b border-[rgba(244,238,227,0.2)] hover:border-[#ff6a35] pb-1 transition-all cursor-pointer"
             >
-              <Star className="w-4 h-4 text-[#E5A93C] fill-[#E5A93C]" />
-              <span>Rate Story</span>
+              <span>Rate & Vote</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
         </div>
 
-        {/* Right Column: Score Breakdown Box */}
-        <div className="w-full lg:w-80 rating-badge-gold rounded-xl p-5 sm:p-6 space-y-4 flex-shrink-0">
-          <div className="flex items-center justify-between border-b border-[#22222E] pb-3">
-            <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">TFI Rating Score</span>
-              <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="text-3xl font-black font-cinzel text-gradient-gold">
-                  {story.scores?.overall || 9.5}
-                </span>
-                <span className="text-xs text-slate-500 font-bold">/ 10</span>
-              </div>
-            </div>
-            <div className="w-11 h-11 rounded-lg bg-[#E5A93C]/10 border border-[#E5A93C]/30 flex items-center justify-center">
-              <Flame className="w-6 h-6 text-[#E5A93C]" />
-            </div>
+        {/* Right Column: Cinema Beam & Animated Floating Cards */}
+        <div className="lg:col-span-5 relative h-[360px] sm:h-[480px]">
+          
+          {/* Cinema Projector Beam Box */}
+          <div className="absolute inset-0 rounded-3xl overflow-hidden bg-[conic-gradient(from_200deg_at_30%_20%,rgba(225,68,24,0.5),transparent_40%),radial-gradient(circle_at_70%_75%,rgba(215,165,82,0.25),transparent_55%),linear-gradient(155deg,#1c1712_0%,#0c0a08_70%)] border border-[rgba(244,238,227,0.14)] shadow-2xl">
+            
+            {/* Film Perforations on Left Edge */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-[repeating-linear-gradient(180deg,rgba(244,238,227,0.14)_0_10px,transparent_10px_26px)] opacity-50" />
+            
+            {/* Background Story Poster Preview */}
+            <img
+              src={story.hero_image || story.poster_url}
+              alt={story.title}
+              className="w-full h-full object-cover opacity-40 mix-blend-luminosity filter brightness-90 saturate-150"
+            />
           </div>
 
-          {/* Rating Sliders Preview */}
-          <div className="space-y-3 pt-1">
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">Story Concept</span>
-                <span className="text-[#E5A93C] font-bold">{story.scores?.concept || 9.5}/10</span>
-              </div>
-              <div className="w-full h-1.5 bg-[#16161E] rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#E5A93C] rounded-full"
-                  style={{ width: `${(story.scores?.concept || 9.5) * 10}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">Screenplay & Pacing</span>
-                <span className="text-[#E5A93C] font-bold">{story.scores?.screenplay || 9.2}/10</span>
-              </div>
-              <div className="w-full h-1.5 bg-[#16161E] rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#E5A93C] rounded-full"
-                  style={{ width: `${(story.scores?.screenplay || 9.2) * 10}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-300">Mass Elevation Value</span>
-                <span className="text-[#C92A2A] font-bold">{story.scores?.mass_value || 9.8}/10</span>
-              </div>
-              <div className="w-full h-1.5 bg-[#16161E] rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#C92A2A] rounded-full"
-                  style={{ width: `${(story.scores?.mass_value || 9.8) * 10}%` }}
-                />
-              </div>
-            </div>
+          {/* Floating Cinema Card 1 */}
+          <div className="absolute top-8 right-6 w-36 sm:w-44 h-52 sm:h-60 rounded-xl border border-[rgba(244,238,227,0.16)] p-3.5 flex flex-col justify-end bg-gradient-to-br from-[#8a2b1c] to-[#2c110b] shadow-2xl backdrop-blur-sm float-card-anim-1">
+            <span className="text-[10px] font-bold tracking-widest text-[#fff5ee]/80 uppercase">
+              {story.genre || 'Action Epic'}
+            </span>
+            <span className="font-display font-extrabold text-sm sm:text-base text-white mt-1 leading-tight line-clamp-2">
+              {story.title}
+            </span>
+            <span className="text-[10px] text-[#d7a552] font-bold mt-2 flex items-center gap-1">
+              <Star className="w-3 h-3 fill-[#d7a552]" />
+              {story.scores?.overall}/10
+            </span>
           </div>
 
-          <p className="text-[10px] text-slate-500 text-center font-semibold uppercase tracking-wider pt-1">
-            {story.ratings_count || 1420} Fan Reviews Verified
-          </p>
+          {/* Floating Cinema Card 2 */}
+          <div className="absolute bottom-6 left-10 w-36 sm:w-44 h-52 sm:h-60 rounded-xl border border-[rgba(244,238,227,0.16)] p-3.5 flex flex-col justify-end bg-gradient-to-br from-[#9c3554] to-[#2a1119] shadow-2xl backdrop-blur-sm float-card-anim-2">
+            <span className="text-[10px] font-bold tracking-widest text-[#fff5ee]/80 uppercase">
+              {story.dream_cast?.hero ? `Hero: ${story.dream_cast.hero}` : 'TFI Cinema'}
+            </span>
+            <span className="font-display font-extrabold text-sm sm:text-base text-white mt-1 leading-tight line-clamp-2">
+              GARUDA: ASCENT
+            </span>
+            <span className="text-[10px] text-[#ff6a35] font-bold mt-2">
+              ⚡ Interval Bang
+            </span>
+          </div>
+
         </div>
 
       </div>
