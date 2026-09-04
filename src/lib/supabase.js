@@ -12,15 +12,17 @@ export const isSupabaseConfigured = () => {
   return Boolean(supabaseUrl && supabaseAnonKey);
 };
 
-const LOCAL_STORAGE_STORIES_KEY = 'tfi_writersclub_stories_v1';
-const LOCAL_STORAGE_RATINGS_KEY = 'tfi_writersclub_ratings_v1';
+const LOCAL_STORAGE_STORIES_KEY = 'tfi_writersclub_stories_v2';
 
 // Helper to get local stored stories or fallback to INITIAL_STORIES
 const getStoredStories = () => {
   try {
     const cached = localStorage.getItem(LOCAL_STORAGE_STORIES_KEY);
     if (cached) {
-      return JSON.parse(cached);
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.warn('LocalStorage error:', e);
@@ -58,14 +60,13 @@ export async function fetchStories() {
 
   // Fallback to local stored stories
   const localData = getStoredStories();
-  return { data: localData, isLive: false };
+  return { data: localData, isLive: Boolean(supabase) };
 }
 
 /**
  * Submit a fan rating for a story
  */
 export async function submitRating(storyId, ratingObj) {
-  // ratingObj: { concept: number, screenplay: number, mass_value: number, tags: string[], comment: string }
   const overall = Number(((ratingObj.concept + ratingObj.screenplay + ratingObj.mass_value) / 3).toFixed(1));
 
   if (supabase) {
@@ -84,6 +85,7 @@ export async function submitRating(storyId, ratingObj) {
             created_at: new Date().toISOString()
           }
         ]);
+
       if (!error) {
         return { success: true, isLive: true };
       }
@@ -170,3 +172,4 @@ export async function createStory(newStoryData) {
   saveStoredStories(stories);
   return { success: true, story: storyPayload, isLive: false };
 }
+

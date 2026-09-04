@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Type, Star, Bookmark, Share2, Eye, Sun, Moon, ArrowLeft, Zap, Sparkles } from 'lucide-react';
+import { X, Type, Star, Bookmark, Share2, ArrowLeft, Zap, Sparkles } from 'lucide-react';
 
 export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked, onToggleBookmark }) {
   const [fontSize, setFontSize] = useState('M'); // 'S', 'M', 'L'
@@ -32,10 +32,10 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
   // Font size class mapping
   const getFontSizeClass = () => {
     switch (fontSize) {
-      case 'S': return 'text-sm leading-relaxed';
-      case 'L': return 'text-[#15px] sm:text-xl leading-loose';
+      case 'S': return 'text-xs sm:text-sm leading-relaxed';
+      case 'L': return 'text-base sm:text-xl leading-loose';
       case 'M':
-      default: return 'text-base sm:text-lg leading-relaxed';
+      default: return 'text-sm sm:text-lg leading-relaxed';
     }
   };
 
@@ -56,7 +56,7 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex flex-col justify-between overflow-hidden animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex flex-col justify-between overflow-hidden animate-fadeIn">
       
       {/* Top Reading Progress Bar */}
       <div className="w-full h-1 bg-[#181820] relative z-50">
@@ -67,42 +67,39 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
       </div>
 
       {/* Top Toolbar */}
-      <header className="w-full glass-nav px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 z-40 border-b border-[#27272A]">
+      <header className="w-full glass-nav px-3 sm:px-8 py-3 flex items-center justify-between gap-2 sm:gap-4 z-40 border-b border-[#27272A]">
         
         {/* Left: Back button & Title */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-[#121218] border border-[#27272A] hover:border-[#E5A93C] text-slate-300 hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-[#121218] border border-[#27272A] hover:border-[#E5A93C] text-slate-300 hover:text-white transition-colors cursor-pointer flex-shrink-0"
             title="Close Reader"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
-          <div>
-            <h2 className="font-cinzel text-sm sm:text-lg font-bold text-white truncate max-w-xs sm:max-w-md">
+          <div className="min-w-0">
+            <h2 className="font-cinzel text-xs sm:text-base font-bold text-white truncate max-w-[140px] xs:max-w-[200px] sm:max-w-md">
               {story.title}
             </h2>
-            <p className="text-[11px] text-slate-400">
-              {story.genre} • Dream Hero: <span className="text-[#E5A93C] font-semibold">{story.dream_cast?.hero}</span>
+            <p className="text-[10px] sm:text-xs text-slate-400 truncate">
+              {story.genre} • <span className="text-[#E5A93C] font-semibold">{story.dream_cast?.hero}</span>
             </p>
           </div>
         </div>
 
         {/* Right: Controls (Font Sizing, Theme, Actions) */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           
           {/* Font Size Toggle */}
-          <div className="flex items-center bg-[#121218] border border-[#27272A] rounded-lg p-1 text-xs font-bold">
-            <span className="text-slate-500 px-1.5 hidden sm:inline">
-              <Type className="w-3.5 h-3.5" />
-            </span>
+          <div className="flex items-center bg-[#121218] border border-[#27272A] rounded-lg p-0.5 sm:p-1 text-[11px] font-bold">
             {['S', 'M', 'L'].map(size => (
               <button
                 key={size}
                 onClick={() => setFontSize(size)}
-                className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition-colors cursor-pointer ${
                   fontSize === size
-                    ? 'bg-[#E5A93C] text-slate-950 font-extrabold'
+                    ? 'bg-[#E5A93C] text-slate-950 font-black'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -111,23 +108,21 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
             ))}
           </div>
 
-          {/* Theme Mode Selector */}
-          <div className="hidden sm:flex items-center bg-[#121218] border border-[#27272A] rounded-lg p-1 text-xs">
+          {/* Theme Selector */}
+          <div className="hidden xs:flex items-center bg-[#121218] border border-[#27272A] rounded-lg p-0.5 sm:p-1 text-[11px]">
             <button
               onClick={() => setThemeMode('obsidian')}
-              className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${
+              className={`px-2 py-0.5 sm:py-1 rounded font-medium transition-colors cursor-pointer ${
                 themeMode === 'obsidian' ? 'bg-[#E5A93C]/20 text-[#E5A93C] border border-[#E5A93C]/40' : 'text-slate-400'
               }`}
-              title="Obsidian Theme"
             >
               Obsidian
             </button>
             <button
               onClick={() => setThemeMode('sepia')}
-              className={`px-2 py-1 rounded font-medium transition-colors cursor-pointer ${
+              className={`px-2 py-0.5 sm:py-1 rounded font-medium transition-colors cursor-pointer ${
                 themeMode === 'sepia' ? 'bg-[#E6D7C3]/20 text-[#E6D7C3] border border-[#E6D7C3]/40' : 'text-slate-400'
               }`}
-              title="Sepia Parchment Theme"
             >
               Sepia
             </button>
@@ -136,7 +131,7 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
           {/* Bookmark Toggle */}
           <button
             onClick={() => onToggleBookmark(story.id)}
-            className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+            className={`p-1.5 sm:p-2 rounded-xl border transition-colors cursor-pointer ${
               isBookmarked
                 ? 'bg-[#E5A93C] text-slate-950 border-[#E5A93C]'
                 : 'bg-[#121218] border-[#27272A] text-slate-300 hover:text-white'
@@ -149,12 +144,12 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
           {/* Share Link */}
           <button
             onClick={handleShare}
-            className="p-2 rounded-xl bg-[#121218] border border-[#27272A] text-slate-300 hover:text-white transition-colors cursor-pointer relative"
+            className="p-1.5 sm:p-2 rounded-xl bg-[#121218] border border-[#27272A] text-slate-300 hover:text-white transition-colors cursor-pointer relative"
             title="Share Script Link"
           >
             <Share2 className="w-4 h-4" />
             {copiedToast && (
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-[#E5A93C] text-slate-950 font-bold text-[10px] rounded shadow-lg whitespace-nowrap">
+              <span className="absolute -bottom-8 right-0 px-2 py-1 bg-[#E5A93C] text-slate-950 font-bold text-[10px] rounded shadow-lg whitespace-nowrap z-50">
                 Link Copied!
               </span>
             )}
@@ -163,9 +158,9 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
           {/* Close Reader */}
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-[#DC2626]/20 border border-[#DC2626]/40 text-red-400 hover:bg-[#DC2626]/40 transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl bg-[#DC2626]/20 border border-[#DC2626]/40 text-red-400 hover:bg-[#DC2626]/40 transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
         </div>
@@ -174,78 +169,75 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
       {/* Main Reader Scroll Container */}
       <main 
         ref={containerRef}
-        className={`flex-1 overflow-y-auto p-4 sm:p-10 lg:p-16 ${getThemeClass()}`}
+        className={`flex-1 overflow-y-auto px-4 py-6 sm:p-10 lg:p-16 ${getThemeClass()}`}
       >
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-16">
           
           {/* Header Card */}
-          <div className="text-center pb-8 border-b border-[#27272A] space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5A93C]/10 border border-[#E5A93C]/30 text-[#E5A93C] text-xs font-bold uppercase tracking-widest">
+          <div className="text-center pb-6 border-b border-[#27272A] space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E5A93C]/10 border border-[#E5A93C]/30 text-[#E5A93C] text-[10px] sm:text-xs font-bold uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5" />
               TFI Official Screenplay Format
             </div>
 
-            <h1 className="font-cinzel text-3xl sm:text-5xl font-black tracking-wide text-white">
+            <h1 className="font-cinzel text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-white">
               {story.title}
             </h1>
 
             {story.tagline && (
-              <p className="font-serif-title italic text-slate-400 text-lg">
+              <p className="font-serif-title italic text-slate-400 text-sm sm:text-lg">
                 "{story.tagline}"
               </p>
             )}
 
-            <div className="pt-2 flex flex-wrap justify-center items-center gap-4 text-xs text-slate-400 font-medium">
+            <div className="pt-2 flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-xs text-slate-400 font-medium">
               <span>Author: <strong className="text-white">{story.author_name}</strong></span>
               <span>•</span>
               <span>Genre: <strong className="text-[#E5A93C]">{story.genre}</strong></span>
               <span>•</span>
-              <span>Rating: <strong className="text-white">{story.scores?.overall}/10</strong> ({story.ratings_count} votes)</span>
+              <span>Score: <strong className="text-white">{story.scores?.overall}/10</strong></span>
             </div>
 
             {/* Dream Cast Banner */}
-            <div className="mt-4 p-4 rounded-xl bg-[#09090B]/60 border border-[#27272A] grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+            <div className="mt-4 p-3.5 sm:p-4 rounded-xl bg-[#09090B]/60 border border-[#27272A] grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Dream Hero</span>
-                <p className="text-sm font-bold text-white">{story.dream_cast?.hero}</p>
+                <p className="text-xs sm:text-sm font-bold text-white">{story.dream_cast?.hero}</p>
                 {story.dream_cast?.hero_role && (
-                  <span className="text-[11px] text-[#E5A93C]">{story.dream_cast.hero_role}</span>
+                  <span className="text-[10px] text-[#E5A93C]">{story.dream_cast.hero_role}</span>
                 )}
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Dream Director</span>
-                <p className="text-sm font-bold text-white">{story.dream_cast?.director}</p>
+                <p className="text-xs sm:text-sm font-bold text-white">{story.dream_cast?.director}</p>
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Dream Music</span>
-                <p className="text-sm font-bold text-white">{story.dream_cast?.music}</p>
+                <p className="text-xs sm:text-sm font-bold text-white">{story.dream_cast?.music}</p>
               </div>
             </div>
           </div>
 
           {/* Formatted Script Body */}
-          <div className={`font-script whitespace-pre-wrap ${getFontSizeClass()} space-y-6 pt-4`}>
+          <div className={`font-script whitespace-pre-wrap ${getFontSizeClass()} space-y-5 pt-2`}>
             {story.full_script.split('\n').map((line, idx) => {
-              // Highlight Interval Bang Callouts
               if (line.includes('INTERVAL BANG') || line.includes('ACT 2:') || line.includes('TITLE CARD')) {
                 return (
-                  <div key={idx} className="my-6 p-4 rounded-xl bg-[#E5A93C]/10 border-l-4 border-[#E5A93C] font-sans">
-                    <span className="font-bold text-[#E5A93C] uppercase text-sm tracking-wider flex items-center gap-2">
-                      <Zap className="w-4 h-4" />
+                  <div key={idx} className="my-5 p-3.5 sm:p-4 rounded-xl bg-[#E5A93C]/10 border-l-4 border-[#E5A93C] font-sans">
+                    <span className="font-bold text-[#E5A93C] uppercase text-xs sm:text-sm tracking-wider flex items-center gap-2">
+                      <Zap className="w-4 h-4 flex-shrink-0" />
                       {line}
                     </span>
                   </div>
                 );
               }
-              // Highlight Scene Headings
               if (line.startsWith('SCENE') || line.startsWith('EXT.') || line.startsWith('INT.')) {
                 return (
-                  <div key={idx} className="pt-4 font-bold text-[#E5A93C] uppercase tracking-wider text-base border-b border-[#27272A]/50 pb-1">
+                  <div key={idx} className="pt-3 font-bold text-[#E5A93C] uppercase tracking-wider text-xs sm:text-base border-b border-[#27272A]/50 pb-1">
                     {line}
                   </div>
                 );
               }
-              // Character dialogue headers (ALL CAPS line)
               if (line.trim() === line.trim().toUpperCase() && line.trim().length > 3 && line.trim().length < 30 && !line.includes('===') && !line.includes('---')) {
                 return (
                   <div key={idx} className="pt-2 font-bold text-white tracking-widest text-center">
@@ -259,11 +251,11 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
           </div>
 
           {/* Bottom Floating Rating Callout */}
-          <div className="mt-12 p-8 rounded-2xl glass-panel-gold border border-[#E5A93C]/40 text-center space-y-4">
-            <h3 className="font-cinzel text-2xl font-bold text-white">
+          <div className="mt-8 sm:mt-12 p-6 sm:p-8 rounded-2xl glass-panel-gold border border-[#E5A93C]/40 text-center space-y-3">
+            <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-white">
               Finished Reading {story.title}?
             </h3>
-            <p className="text-slate-300 text-sm max-w-md mx-auto">
+            <p className="text-slate-300 text-xs sm:text-sm max-w-md mx-auto">
               Cast your vote on Story Concept, Screenplay Pacing, and Mass Elevation Value!
             </p>
             <button
@@ -271,9 +263,9 @@ export default function ScriptReader({ story, onClose, onOpenRate, isBookmarked,
                 onClose();
                 onOpenRate(story);
               }}
-              className="px-8 py-3.5 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-[#F3C775] via-[#E5A93C] to-[#B87E1B] shadow-xl shadow-[#E5A93C]/20 hover:scale-105 transition-all inline-flex items-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-[#F3C775] via-[#E5A93C] to-[#B87E1B] shadow-xl shadow-[#E5A93C]/20 hover:scale-105 transition-all inline-flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
             >
-              <Star className="w-5 h-5 fill-slate-950" />
+              <Star className="w-4 h-4 fill-slate-950" />
               <span>Submit Your Fan Rating</span>
             </button>
           </div>
